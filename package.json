@@ -1,0 +1,27 @@
+{
+  "name": "appointments",
+  "version": "1.0.0",
+  "description": "Appointments system",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vancamhuynh/appointments.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  }
+}
