@@ -19,12 +19,12 @@ describe('Appointment', () => {
   it('should render customer first name', () => {
     customer = { firstName: 'Van' } 
     render(<Appointment customer={customer} />) 
-    expect(container.textContent).toEqual('Van')
+    expect(container.textContent).toMatch('Van')
   })
   it('should render another customer first name', () => {
     customer = { firstName: 'Cam' }
     render(<Appointment customer={customer} />)
-    expect(container.textContent).toEqual('Cam')
+    expect(container.textContent).toMatch('Cam')
   })
 })
 
