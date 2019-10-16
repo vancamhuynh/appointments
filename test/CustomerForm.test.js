@@ -16,60 +16,137 @@ describe('CustomerForm', () => {
     expect(formElement.tagName).toEqual('INPUT')
     expect(formElement.type).toEqual("text")
   }
-  const firstNameField = () => form('customer').elements.firstName
+  const field = (name) => form('customer').elements[name]
   const labelFor = formElementName => container.querySelector(`label[for="${formElementName}"]`)
+  const itRendersAsATextBox = (fieldName) => {
+    it(`should render the ${fieldName} as a text box`, () => {
+      render(<CustomerForm />)
+  
+      expectToBeInputFieldOfTypeText(field(fieldName))
+    })
+  }
+  const itIncludeTheExistingValue = (fieldName) => {
+    it(`should include the existing value for the ${fieldName}`, () => {
+      render(<CustomerForm {...{[fieldName]: "value"}} />)
+      expect(field(fieldName).value).toEqual('value')
+    })
+  }
 
+  const itRenderALabel = (fieldName, label) => {
+    it(`should render a label for ${fieldName}`, () => {
+      render(<CustomerForm />)
+      expect(labelFor(fieldName)).not.toBeNull()
+      expect(labelFor(fieldName).textContent).toEqual(label)
+    })
+  }
+
+  const itAssignAnIdThatMatchesLabelId = (fieldName, id) => {
+    it(`assigns an id that matches the label id to ${fieldName} field`, () => {
+      render(<CustomerForm />)
+      expect(field(fieldName).id).toEqual(id)
+    })
+  }
+
+  const itSubmitsExistingValue = async (fieldName, value) => {
+    it('saves existing value when submitted', async () => {
+      expect.hasAssertions()
+      
+      render(
+        <CustomerForm
+          {...{ [fieldName]: value,
+          onSubmit: (props) => expect(props[fieldName]).toEqual(value)} }
+        />
+      )
+
+      await ReactTestUtils.Simulate.submit(form('customer'))
+    })
+  }
+
+  const itSubmitsNewValue = async (fieldName, value) => {
+    it(`should save new ${fieldName} when submitted`, async () => {
+      expect.hasAssertions()
+  
+      render(
+        <CustomerForm 
+          {...{ [fieldName]: 'Van',
+          onSubmit: (props) => expect(props[fieldName]).toEqual(value) }}
+        />
+      )
+  
+      await ReactTestUtils.Simulate.change(field(fieldName), { target: { value: value, name: fieldName } })
+      await ReactTestUtils.Simulate.submit(form('customer'))
+    })
+  }
   it('should render a form', () => {
     render(<CustomerForm />)
 
     expect(form('customer')).not.toBeNull()
   })
 
-  it('should render the first name as a text box', () => {
+  it('has a submit button', () => {
     render(<CustomerForm />)
-
-    expectToBeInputFieldOfTypeText(firstNameField())
-  })
-
-  it('should include the existing value for the first name', () => {
-    render(<CustomerForm firstName="Van" />)
-    expect(firstNameField().value).toEqual('Van')
-  })
-
-  it('should render a label for firstName field', () => {
-    render(<CustomerForm />)
-    expect(labelFor('firstName')).not.toBeNull()
-    expect(labelFor('firstName').textContent).toEqual('First name')
-  })
-
-  it('assigns an id that matches the label id to the first name field', () => {
-    render(<CustomerForm />)
-    expect(firstNameField().id).toEqual('firstName')
-  })
-
-  it('saves existing first name when submitted', async () => {
-    expect.hasAssertions()
+    const subnmitBtn = container.querySelector('input[type="submit"]')
     
-    render(
-      <CustomerForm
-        firstName="Van"
-        onSubmit={({ firstName }) => expect(firstName).toEqual('Van')}  
-      />
-    )
-    await ReactTestUtils.Simulate.submit(form('customer'))
+    expect(subnmitBtn).not.toBeNull()
   })
 
-  it('should save new first name when submitted', async () => {
-    expect.hasAssertions()
+  describe('First Name field', () => {
+    
+    itRendersAsATextBox('firstName')
+    itIncludeTheExistingValue('firstName')
+    itRenderALabel('firstName', 'First name')
+    itAssignAnIdThatMatchesLabelId('firstName', 'firstName')
+    itSubmitsExistingValue('firstName', 'Van')  
+    itSubmitsNewValue('firstName', 'Vicky') 
+  })
 
-    render(
-      <CustomerForm 
-        firstName="Van"
-        onSubmit={({ firstName }) => expect(firstName).toEqual('Cam')}
-      />
-    )
+  describe('Last Name field', () => {
 
-    await ReactTestUtils.Simulate.change(firstNameField(), { target: { value: 'Cam' } })
-    await ReactTestUtils.Simulate.submit(form('customer'))
+    itRendersAsATextBox('lastName')
+    itIncludeTheExistingValue('lastName')
+    itRenderALabel('lastName', 'Last name')
+    itAssignAnIdThatMatchesLabelId('lastName', 'lastName')
+    itSubmitsExistingValue('lastName', 'Huynh')  
+    itSubmitsNewValue('lastName', 'Scott') 
+  //   it('assigns an id that matches the label id to the first name field', () => {
+  //     render(<CustomerForm />)
+  //     expect(field('firstName').id).toEqual('firstName')
+  //   })
+  
+  //   it('saves existing first name when submitted', async () => {
+  //     expect.hasAssertions()
+      
+  //     render(
+  //       <CustomerForm
+  //         firstName="Van"
+  //         onSubmit={({ firstName }) => expect(firstName).toEqual('Van')}  
+  //       />
+  //     )
+  //     await ReactTestUtils.Simulate.submit(form('customer'))
+  //   })
+  
+  //   it('should save new first name when submitted', async () => {
+  //     expect.hasAssertions()
+  
+  //     render(
+  //       <CustomerForm 
+  //         firstName="Van"
+  //         onSubmit={({ firstName }) => expect(firstName).toEqual('Cam')}
+  //       />
+  //     )
+  
+  //     await ReactTestUtils.Simulate.change(field('firstName'), { target: { value: 'Cam' } })
+  //     await ReactTestUtils.Simulate.submit(form('customer'))
+  //   })
+  })
+
+  describe('Phone Number field', () => {
+
+    itRendersAsATextBox('phoneNumber')
+    itIncludeTheExistingValue('phoneNumber')
+    itRenderALabel('phoneNumber', 'Phone number')
+    itAssignAnIdThatMatchesLabelId('phoneNumber', 'phoneNumber')
+    itSubmitsExistingValue('phoneNumber', '0000')  
+    itSubmitsNewValue('phoneNumber', '1234') 
   })
 })
